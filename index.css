@@ -1,0 +1,40 @@
+@import "https://fonts.googleapis.com/css?family=Exo:400,700";
+
+html *{
+    font-family: "Exo", sans-serif;
+}
+
+.container1{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+.header{
+    background: rgb(204, 174, 174);
+    display: flex;
+    text-align: center;
+
+    position: fixed;
+    top:0;
+    width: 100%;
+    height: auto;
+}
+
+
+.header-img{
+    width: 60px;
+    height: 60px;
+}
+
+.container2{
+    margin-top: 80px;
+    display: flex; 
+}
+
+.filters{
+    background: aquamarine;
+}
+
+.data{
+    background: rgb(172, 141, 230);
+} 
