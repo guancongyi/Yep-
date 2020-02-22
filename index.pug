@@ -1,0 +1,82 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Document
+    link(rel='stylesheet', href='index.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+  body
+    .container1
+      .header
+        h2.title Yep!
+        img.header-img(src='asset/sun.png')
+      .container2
+        .filters
+          form#select_db
+            p Please select database:
+            input(type='radio', name='db', value='world')
+            label(for='male') World DB
+            input(type='radio', name='db', value='world_restaurant')
+            label(for='female') World Restaurant
+            input(type='radio', name='db', value='us_restaurant')
+            label(for='other') US Restaurant
+            br
+            br
+            input(type='submit', value='Submit')
+        .data
+          div
+            table(border='0')
+              tbody
+                tr
+                  th id
+                  th country
+                  th city
+                  th gdp
+                tr
+                  td 01
+                  td United States
+                  td Los Angeles
+                  // <td><span class="delBtn">删除</span></td>
+                  td 1000000
+                tr
+                  td 01
+                  td United States
+                  td Los Angeles
+                  // <td><span class="delBtn">删除</span></td>
+                  td 1000000
+                //
+                  <tr>
+                  <td>18人死伤！韩国一男子纵火后持凶器伤害避险邻居</td>
+                  <td>纵火</td>
+                  <td>韩国</td>
+                  <td><img width="140px" src="img/img.png" /></td>
+                  <td><span class="delBtn">删除</span></td>
+                  </tr>
+            .pagination
+              a.prev(href='javascript:;') <-
+              a(href='javascript:;') 1
+              a(href='javascript:;') 2
+              a(href='javascript:;') 3
+              a(href='javascript:;') 4
+              a(href='javascript:;') 5
+              a.next(href='javascript:;') ->
+    script.
+      $(document).ready(()=>{
+      $('#select_db input').on('change', function() {
+      let typeOfDb = $('input[name=db]:checked', '#select_db').val();
+      
+      $.ajax({
+      url:'/add',
+      method:'post',
+      data:{
+      typeOfDb
+      }
+      
+      // success: res => {
+      //     console.log(res);
+      // }
+      });
+      // alert($('input[name=db]:checked', '#select_db').val());
+      });
+      })

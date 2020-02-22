@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container1">
+        <div class="header">
+            <h2 class="title">Yep!</h2>
+            <img class="header-img" src="asset/sun.png"></img>
+        </div>
+        <div class="container2">
+            <div class="filters">
+               <form id='select_db'>
+                <p>Please select database:</p>
+                <input type="radio" name="db" value="world">
+                <label for="male">World DB</label>
+                <input type="radio" name="db" value="world_restaurant">
+                <label for="female">World Restaurant</label>
+                <input type="radio" name="db" value="us_restaurant">
+                <label for="other">US Restaurant</label>
+                <br><br> 
+                <input type="submit" value="Submit">
+              </form>
+            </div>
+            <div class="data">
+                <div>
+                    <table border="0">
+                        <tr>
+                            <th>id</th>
+                            <th>country</th>
+                            <th>city</th>
+                            <th>gdp</th>
+                        </tr>
+                        <tr>
+                            <td>01</td>
+                            <td>United States</td>
+                            <td>Los Angeles</td>
+                            <!-- <td><span class="delBtn">删除</span></td> -->
+                            <td>1000000</td>
+                        </tr>
+                        <tr>
+                            <td>01</td>
+                            <td>United States</td>
+                            <td>Los Angeles</td>
+                            <!-- <td><span class="delBtn">删除</span></td> -->
+                            <td>1000000</td>
+                        </tr>   
+                        <!-- <tr>
+                            <td>18人死伤！韩国一男子纵火后持凶器伤害避险邻居</td>
+                            <td>纵火</td>
+                            <td>韩国</td>
+                            <td><img width="140px" src="img/img.png" /></td>
+                            <td><span class="delBtn">删除</span></td>
+                        </tr> -->
+
+                    </table>
+                    <div class="pagination">
+                        <a href="javascript:;" class="prev"><-</a>
+                        <a href="javascript:;">1</a>
+                        <a href="javascript:;">2</a>
+                        <a href="javascript:;">3</a>
+                        <a href="javascript:;">4</a>
+                        <a href="javascript:;">5</a>
+                        <a href="javascript:;" class="next">-></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</body>
+<script>
+    $(document).ready(()=>{
+        $('#select_db input').on('change', function() {
+            let typeOfDb = $('input[name=db]:checked', '#select_db').val();
+            console.log(typeOfDb)
+            if(typeOfDb === 'world'){
+                $.ajax({
+                    url:'/world',
+                    method:'get'
+                });
+            }else if (typeOfDb == 'world_restaurant'){
+                $.ajax({
+                    url:'/world_restaurant',
+                    method:'get'
+                });
+            }else{
+                $.ajax({
+                    url:'/us_restaurant',
+                    method:'get'
+                });
+            }
+            
+                // success: res => {
+                //     console.log(res);
+                // }
+        
+            // alert($('input[name=db]:checked', '#select_db').val()); 
+        });
+    })
+</script>
+</html>
