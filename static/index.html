@@ -16,7 +16,7 @@
         <div class="container2">
             <div class="filters">
                <form id='select_db'>
-                <p>Please select database:</p>
+                <p><b>Please select database:</b></p>
                 <input type="radio" name="db" value="world">
                 <label for="male">World DB</label>
                 <input type="radio" name="db" value="world_restaurant">
@@ -50,13 +50,6 @@
                             <!-- <td><span class="delBtn">删除</span></td> -->
                             <td>1000000</td>
                         </tr>   
-                        <!-- <tr>
-                            <td>18人死伤！韩国一男子纵火后持凶器伤害避险邻居</td>
-                            <td>纵火</td>
-                            <td>韩国</td>
-                            <td><img width="140px" src="img/img.png" /></td>
-                            <td><span class="delBtn">删除</span></td>
-                        </tr> -->
 
                     </table>
                     <div class="pagination">
@@ -81,27 +74,12 @@
             let typeOfDb = $('input[name=db]:checked', '#select_db').val();
             console.log(typeOfDb)
             if(typeOfDb === 'world'){
-                $.ajax({
-                    url:'/world',
-                    method:'get'
-                });
+                window.location.href = "/world";
             }else if (typeOfDb == 'world_restaurant'){
-                $.ajax({
-                    url:'/world_restaurant',
-                    method:'get'
-                });
+                window.location.href = "/world_restaurant";
             }else{
-                $.ajax({
-                    url:'/us_restaurant',
-                    method:'get'
-                });
+                window.location.href = "/us_restaurant";
             }
-            
-                // success: res => {
-                //     console.log(res);
-                // }
-        
-            // alert($('input[name=db]:checked', '#select_db').val()); 
         });
     })
 </script>
