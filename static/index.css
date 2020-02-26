@@ -37,6 +37,9 @@ html *{
     height: 100%;
     flex:0.5;
 }
+input:checked ~ span {
+    font-weight: bold;
+}
 
 .data{
     margin-left: 4em;

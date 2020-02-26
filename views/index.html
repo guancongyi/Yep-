@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container1">
+        <div class="header">
+            <h2 class="title">Yep!</h2>
+            <img class="header-img" src="asset/sun.png"></img>
+        </div>
+        <div class="container2">
+            <div class="filters">
+               <form id='select_db'>
+                <p><b>Please select database:</b></p>
+                <label><input type="radio" name="db" value="world"><span>World DB</span></label>
+                <label><input type="radio" name="db" value="world_restaurant"><span>World Restaurant</span></label>
+                <label><input type="radio" name="db" value="us_restaurant"><span>US Restaurant</span></label>
+                <br><br>
+              </form>
+              <form id="filter_options">
+
+              </form>
+              <input onclick="sub()" id="submit" type="submit" value="Submit">
+            </div>
+            <div class="data">
+                <div>
+                    <table border="0">
+                        <tr id="table_attrs">
+                            <!-- <th>id</th>
+                            <th>Country</th>
+                            <th>City</th>
+                            <th>GDP</th> -->
+                        </tr>
+                        <tr id="data">
+                            <!-- <td>01</td>
+                            <td>United States</td>
+                            <td>Los Angeles</td>
+                            <td><span class="delBtn">删除</span></td>
+                            <td>1000000</td> -->
+                        </tr>
+                    </table>
+                    <div class="pagination">
+                        <a href="javascript:;" class="prev"><-</a>
+                        <a href="javascript:;">1</a>
+                        <a href="javascript:;">2</a>
+                        <a href="javascript:;">3</a>
+                        <a href="javascript:;">4</a>
+                        <a href="javascript:;">5</a>
+                        <a href="javascript:;" class="next">-></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+$(document).ready(()=>{
+    $('#select_db input').on('change', function() {
+        let typeOfDb = $('input[name=db]:checked', '#select_db').val();
+        console.log(typeOfDb)
+        if(typeOfDb == 'world'){
+            $('#filter_options').empty();
+            $('#filter_options').append('<h2>World Filters</h2>');
+            $('#filter_options').append('<input>...</input>');
+            $('#filter_options').append('<h1>World Filters</h1>');
+            
+            $('#table_attrs').replaceWith('<tr id="table_attrs"> \
+                <th>ID</th><th>Country</th><th>City</th><th>GDP</th> </tr>');
+                            
+            // get request for data
+        }else if (typeOfDb == 'world_restaurant'){
+            $('#filter_options').empty();
+            $('#filter_options').append('<h1>World Restaurant Filters</h1>');
+            $('#filter_options').append('<h1>World Restaurant Filters</h1>');
+            $('#filter_options').append('<h1>World Restaurant Filters</h1>');
+            $('#filter_options').append('<h1>World Restaurant Filters</h1>');
+
+            $('#table_attrs').replaceWith('<tr id="table_attrs"> \
+                <th>ID</th><th>Country</th><th>Name</th><th>Rating</th> </tr>');
+        }else{
+            $('#filter_options').empty();
+            $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+            $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+            $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+            $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+
+            $('#table_attrs').replaceWith('<tr id="table_attrs"> \
+                <th>ID</th><th>City</th><th>Name</th><th>Stars</th><th>Open Now</th> </tr>');
+        }
+    });
+
+})
+
+function sub(){
+    let typeOfDb = $('input[name=db]:checked', '#select_db').val();
+    // setTimeout(
+    // function() 
+    // {
+    //     console.log(JSON.stringify({
+    //     'typeOfDb': typeOfDb,
+    //     'filterData': 'test'
+    // }))
+    // }, 2000);
+    
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "/setFilter", true)
+    xhr.setRequestHeader("Content-type","application/json;charset=UTF-8");  
+    xhr.onload = function(){
+        console.log(xhr.responseText);
+    }
+    // xhr.send(typeOfDb)
+    xhr.send(JSON.stringify({
+        'typeOfDb': typeOfDb,
+        'filterData': 'test'
+    }));
+};
+
+</script>
+
+</html>
+
