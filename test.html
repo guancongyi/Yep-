@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width"/>
+  <title>Title</title>
+</head>
+<style>
+table.entries {width: 100%;border-spacing: 0px;margin:0;}
+table.entries thead.fixed {position:fixed;top:0;}
+</style>
+<body>
+  <table class="entries" id="entriestable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Location</th>
+            <th>DOB</th>
+            <th>Opt&nbsp;in</th>
+            <th>Added</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="name">Ricky Bobby</td>
+            <td>ricky.bobby@email.com</td>
+            <td class="addy"><i>Kent, GB</i></td>
+            <td class="dob">20/08/1984</td>
+            <td>Yes</td>
+            <td class="date">4 hours ago</td>
+        </tr>
+    </tbody>
+</table>
+</body>
+<script>
+TableThing = function(params) {
+    settings = {
+        table: $('#entriestable'),
+        thead: []
+    };
+
+    this.fixThead = function() {
+        // empty our array to begin with
+        settings.thead = [];
+        // loop over the first row of td's in &lt;tbody> and get the widths of individual &lt;td>'s
+        $('tbody tr:eq(1) td', settings.table).each( function(i,v){
+            settings.thead.push($(v).width());
+        });
+
+        // now loop over our array setting the widths we've got to the &lt;th>'s
+        for(i=0;i<settings.thead.length;i++) {
+            $('thead th:eq('+i+')', settings.table).width(settings.thead[i]);
+        }
+
+        // here we attach to the scroll, adding the class 'fixed' to the &lt;thead> 
+        $(window).scroll(function() {
+            var windowTop = $(window).scrollTop();
+
+            if (windowTop > settings.table.offset().top) {
+                $("thead", settings.table).addClass("fixed");
+            }
+            else {
+                $("thead", settings.table).removeClass("fixed");
+            }
+        });
+    }
+}
+$(function(){
+    var table = new TableThing();
+    table.fixThead();
+    $(window).resize(function(){
+        table.fixThead();
+    });
+});
+
+</script>
+</html>

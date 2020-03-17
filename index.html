@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
+</head>
+<body>
+    
+    <div class="container1">
+        <div class="header">
+            <h2 class="title">Yep!</h2>
+            <img class="header-img" src="sun.png"></img>
+        </div>
+        <div class="container2">
+            <div class="filters">
+               <form id='select_db'>
+                <p><b>Please select database:</b></p>
+                <label><input type="radio" name="db" value="world"><span>World DB</span></label>
+                <label><input type="radio" name="db" value="world_restaurant"><span>World Restaurant</span></label>
+                <label><input type="radio" name="db" value="us_restaurant"><span>US Restaurant</span></label>
+                <br><br>
+              </form>
+              <form id="filter_options"></form>
+              <input id="submit" type="submit" value="Submit">
+            </div>
+            <div class="data">
+                <div id="tables">
+
+                        <table id="t1">
+                            <thead id="header"></thead>
+                            <tbody id="body"></tbody>
+                        </table >
+
+                    
+
+                    <table id="t2">
+                        <thead id="header"></thead>
+                        <tbody id="body"></tbody>
+                    </table>
+
+                    <table id="t3">
+                        <thead id="header"></thead>
+                        <tbody id="body"></tbody>
+                    </table>
+
+                    <!-- <div class="pagination">
+                        <a href="javascript:;" class="prev"><-</a>
+                        <a href="javascript:;">1</a>
+                        <a href="javascript:;">2</a>
+                        <a href="javascript:;">3</a>
+                        <a href="javascript:;">4</a>
+                        <a href="javascript:;">5</a>
+                        <a href="javascript:;" class="next">-></a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="module" src="process.js"></script>
+<script type="module" src="index.js"></script>
+</html>
+
