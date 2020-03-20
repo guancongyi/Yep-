@@ -66,7 +66,7 @@ table tbody{
   width:100%;*/
 } 
 table thead{
-    position: fixed;
+    /* position: fixed; */
     display: block
     /* display: table-header-group; */
 }
