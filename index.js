@@ -3,8 +3,7 @@ import DB from './process.js'
 let database = new DB();
 let currDB = 'world';
 
-
-let widthOfHeaderCells = []
+// submit button clicked
 function submit(){
     if (currDB == 'world'){
         let keyword = $('#keyword').val();
@@ -22,53 +21,49 @@ function submit(){
                     fillTable(id, Object.values(arr[i][j]), 0)
                 }
             }
-            renderTable("#t1")
-            renderTable("#t2")
-            renderTable("#t3")
+
 
         });
     }
+    renderTable("#t1")
+    renderTable("#t2")
+    renderTable("#t3")
 
 };
 
 
-
+// main
 (function init(){
+    $('table').on('scroll', function () {
+        $("#"+this.id+" > *").width($(this).width() + $(this).scrollLeft());
+    });
 
     // when submit button is clicked
     $('#submit').click(function(){submit()});
     
     // input change event listener
     $('#select_db input').on('change', function() {
-        // console.log($("#t1").children()[0])
 
-        // alignWithHeader($('#t1').children('#header'), $('#t1').children('#header'))
         currDB = $('input[name=db]:checked', '#select_db').val();
         if(currDB == 'world'){
             appendWorldFilters();
             // get default data
             database.getData("country",null).then((data)=>{
                 fillTable("#t1", Object.keys(data[0]), 1);
-
                 for (let i=0; i<data.length;i++){
                     fillTable("#t1", Object.values(data[i]), 0);
                 }
-                renderTable(id);
-                
 
-                
+                // renderTable(id);
             })
 
         }else if (currDB == 'world_restaurant'){
             appendWorldRestaurantFilters();
-            // prepTable('<tr><th>ID</th><th>Country</th><th>Name</th><th>Rating</th></tr>');
+
         }else{
             appendUsRestaurantFilters();
-            // prepTable('<tr><th>ID</th><th>City</th><th>Name</th><th>Stars</th><th>Open Now</th></tr>');
         }
 
-
-        
     });
 })();
 
@@ -80,6 +75,7 @@ function renderTable(id){
         "info":false
     });
 }
+
 function fillTable(id, row, isHeader){
     let res = "<tr>"
     
@@ -102,12 +98,7 @@ function fillTable(id, row, isHeader){
         $(id).children("#tb_header").append(res);
 
     }
-    
-
-    
 }
-
-  
 
 function appendWorldFilters(){
     $('#filter_options').empty();

@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- Bootstrap CSS -->
+
     <link rel="stylesheet" href="index.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
     <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
 </head>
+
 <body>
-    
+
     <div class="container1">
         <div class="header">
             <h2 class="title">Yep!</h2>
@@ -20,44 +26,36 @@
         </div>
         <div class="container2">
             <div class="filters">
-               <form id='select_db'>
-                <p><b>Please select database:</b></p>
-                <label><input type="radio" name="db" value="world"><span>World DB</span></label>
-                <label><input type="radio" name="db" value="world_restaurant"><span>World Restaurant</span></label>
-                <label><input type="radio" name="db" value="us_restaurant"><span>US Restaurant</span></label>
-                <br><br>
-              </form>
-              <form id="filter_options"></form>
-              <input id="submit" type="submit" value="Submit">
+                <form id='select_db'>
+                    <p><b>Please select database:</b></p>
+                    <label><input type="radio" name="db" value="world"><span>World DB</span></label>
+                    <label><input type="radio" name="db" value="world_restaurant"><span>World Restaurant</span></label>
+                    <label><input type="radio" name="db" value="us_restaurant"><span>US Restaurant</span></label>
+                    <br><br>
+                </form>
+                <form id="filter_options"></form>
+                <input id="submit" type="submit" value="Submit">
             </div>
-            
+
             <div class="data">
-                <div id="tables">
-                    <table id="t1">
-                        <thead id="tb_header"></thead>
-                        <tbody id="tb_body"></tbody>
-                    </table >
+
+                <div id="tables_container">
+                    <div class="table-responsive">
+                        <table class="table" id="t1">
+                            <thead id="tb_header"></thead>
+                            <tbody id="tb_body"></tbody>
+                        </table>
+                    </div>
                     <br>
-                    <table id="t2">
+                    <table id="t2" class="table">
                         <thead id="tb_header"></thead>
                         <tbody id="tb_body"></tbody>
                     </table>
                     <br>
-                    <table id="t3">
+                    <table id="t3" class="table table-dark">
                         <thead id="tb_header"></thead>
                         <tbody id="tb_body"></tbody>
                     </table>
-
-
-                    <!-- <div class="pagination">
-                        <a href="javascript:;" class="prev"><-</a>
-                        <a href="javascript:;">1</a>
-                        <a href="javascript:;">2</a>
-                        <a href="javascript:;">3</a>
-                        <a href="javascript:;">4</a>
-                        <a href="javascript:;">5</a>
-                        <a href="javascript:;" class="next">-></a>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -65,5 +63,5 @@
 </body>
 <script type="module" src="process.js"></script>
 <script type="module" src="index.js"></script>
-</html>
 
+</html>

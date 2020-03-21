@@ -41,33 +41,41 @@ input:checked ~ span {
     font-weight: bold;
 }
 
-/* .data{
-    margin-left: 4em;
-    background: rgb(172, 141, 230);
-    flex:1.5;
-}  */
+.data{
+    min-width: 0
+    /* flex:1.5; */
+}  
 
 /* data table */
-table{
-    /* display:block;   */
-    /* border:1px solid rgb(170, 145, 145);  
-    margin-top:50px;     */
-    /* height: 150px; */
-    flex: 1;
-    text-align: center;
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: scroll;
+    display: block;
 }
-/* tbody{
-    display:block;
-    overflow-y:scroll; 
-    height:150px;    
-} */
-table td,table th {
-    border-bottom: 1px solid #ebeef5;
-    border-right: 1px solid #ebeef5;
-} 
+thead {
+    background-color: #EFEFEF;
+}
+thead, tbody {
+    display: block;
+}
+tbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 500px;
+}
+td, th {
+    min-width: 150px;
+    height: 25px;
+    border: dashed 1px lightblue;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
 
 /* pagination */
-.pagination{
+/* .pagination{
     display: flex;
     width: 300px;
     text-align: center;
@@ -86,4 +94,4 @@ table td,table th {
 
 .pagination a:hover{
     color: rgb(247, 73, 73);
-}
+} */

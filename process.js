@@ -28,7 +28,7 @@ class database{
         let dbRef = firebase.database().ref();
         
         if (filter == null){
-            let data = dbRef.child(db).limitToFirst(10);
+            let data = dbRef.child(db);
             return new Promise((resolve, _ )=>{
                 data.on('value',function(snapshot){
                     resolve(Object.values(snapshot.val()));
