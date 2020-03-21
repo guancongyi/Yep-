@@ -25,9 +25,6 @@ function submit(){
 
         });
     }
-    renderTable("#t1")
-    renderTable("#t2")
-    renderTable("#t3")
 
 };
 
@@ -38,7 +35,6 @@ function submit(){
         $("#"+this.id+" > *").width($(this).width() + $(this).scrollLeft());
     });
 
-    // when submit button is clicked
     $('#submit').click(function(){submit()});
     
     // input change event listener
@@ -53,8 +49,6 @@ function submit(){
                 for (let i=0; i<data.length;i++){
                     fillTable("#t1", Object.values(data[i]), 0);
                 }
-
-                // renderTable(id);
             })
 
         }else if (currDB == 'world_restaurant'){
@@ -68,12 +62,7 @@ function submit(){
 })();
 
 function renderTable(id){
-    $(id).DataTable({
-        "scrollY":        "250px",
-        "scrollX":        "90%",
-        "paging":         false,
-        "info":false
-    });
+
 }
 
 function fillTable(id, row, isHeader){
