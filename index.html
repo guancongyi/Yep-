@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="index.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 </head>
 <body>
     
@@ -28,25 +30,24 @@
               <form id="filter_options"></form>
               <input id="submit" type="submit" value="Submit">
             </div>
+            
             <div class="data">
                 <div id="tables">
-
-                        <table id="t1">
-                            <thead id="header"></thead>
-                            <tbody id="body"></tbody>
-                        </table >
-
-                    
-
+                    <table id="t1">
+                        <thead id="tb_header"></thead>
+                        <tbody id="tb_body"></tbody>
+                    </table >
+                    <br>
                     <table id="t2">
-                        <thead id="header"></thead>
-                        <tbody id="body"></tbody>
+                        <thead id="tb_header"></thead>
+                        <tbody id="tb_body"></tbody>
+                    </table>
+                    <br>
+                    <table id="t3">
+                        <thead id="tb_header"></thead>
+                        <tbody id="tb_body"></tbody>
                     </table>
 
-                    <table id="t3">
-                        <thead id="header"></thead>
-                        <tbody id="body"></tbody>
-                    </table>
 
                     <!-- <div class="pagination">
                         <a href="javascript:;" class="prev"><-</a>

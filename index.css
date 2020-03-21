@@ -41,41 +41,30 @@ input:checked ~ span {
     font-weight: bold;
 }
 
-.data{
+/* .data{
     margin-left: 4em;
     background: rgb(172, 141, 230);
     flex:1.5;
-} 
+}  */
 
 /* data table */
-
-
-table {
-    /* padding-right:1em;
-    flex:1; */
+table{
+    /* display:block;   */
+    /* border:1px solid rgb(170, 145, 145);  
+    margin-top:50px;     */
+    /* height: 150px; */
+    flex: 1;
     text-align: center;
-    display: block;
-  height: 250px;
-  overflow: auto;
 }
-
-table tbody{
-     display: block;
-    /*overflow:auto;
-  height:200px;
-  width:100%;*/
-} 
-table thead{
-    /* position: fixed; */
-    display: block
-    /* display: table-header-group; */
-}
-
-table td,th {
-    
+/* tbody{
+    display:block;
+    overflow-y:scroll; 
+    height:150px;    
+} */
+table td,table th {
     border-bottom: 1px solid #ebeef5;
     border-right: 1px solid #ebeef5;
-}
+} 
 
 /* pagination */
 .pagination{
