@@ -42,9 +42,11 @@ function submit(){
 
         currDB = $('input[name=db]:checked', '#select_db').val();
         if(currDB == 'world'){
+
             appendWorldFilters();
             // get default data
             database.getData("country",null).then((data)=>{
+                // $('#t1').empty()
                 fillTable("#t1", Object.keys(data[0]), 1);
                 for (let i=0; i<data.length;i++){
                     fillTable("#t1", Object.values(data[i]), 0);
@@ -53,9 +55,18 @@ function submit(){
 
         }else if (currDB == 'world_restaurant'){
             appendWorldRestaurantFilters();
+            
 
         }else{
             appendUsRestaurantFilters();
+            // get default data
+            database.getData("yelp_business",null).then((data)=>{
+                // $('#t1').empty()
+                fillTable("#t1", Object.keys(data[0]), 1);
+                for (let i=0; i<100;i++){
+                    fillTable("#t1", Object.values(data[i]), 0);
+                }
+            })
         }
 
     });
@@ -91,17 +102,19 @@ function fillTable(id, row, isHeader){
 
 function appendWorldFilters(){
     $('#filter_options').empty();
-    $('#filter_options').append('<p>Filters</p>');
+    $('#filter_options').append('<p>Keyword Search: </p>');
     $('#filter_options').append('<input id="keyword" placeholder="Enter keywords here"></input>');
     // $('#filter_options').append('<h1>World Filters</h1>');
 }
 
 function appendUsRestaurantFilters(){
     $('#filter_options').empty();
-    $('#filter_options').append('<h1>US Restaurant Filters</h1>');
-    $('#filter_options').append('<h1>US Restaurant Filters</h1>');
-    $('#filter_options').append('<h1>US Restaurant Filters</h1>');
-    $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+    // $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+    $('#filter_options').append('<p>Keyword Search: </p>');
+    $('#filter_options').append('<input id="keyword" placeholder="Enter keywords here"></input>');
+    // $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+    // $('#filter_options').append('<h1>US Restaurant Filters</h1>');
+    // $('#filter_options').append('<h1>US Restaurant Filters</h1>');
 }
 
 function appendWorldRestaurantFilters(){
