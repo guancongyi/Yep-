@@ -25,16 +25,16 @@ function submit(){
     }else if(currDB == 'us_restaurant'){
         let keyword = $('#keyword').val();
         database.getData(currDB, {'keyword':keyword}).then((data)=>{
-            
+            // map.addMarker("",-118.286324, 34.020318)
             let arr = Object.values(data)
             for (let i = 0; i < YELP_CATEGORIES; i++){
                 if(arr[i].length == 0)continue;
                 if (i == 0){ // business section
+ 
                     // each item in arr
                     for (let j =0; j<arr[i].length; j++){
-                        let long = arr[i][j].longitude;
-                        let lat = arr[i][j].latitude;
-                        map.addMarker("", long,lat)
+                        // let name = arr[i][j].name;
+                        map.addMarker("",arr[i][j].longitude,arr[i][j].latitude)
                         // console.log(long, lat)
                     }
                 }

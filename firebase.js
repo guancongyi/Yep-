@@ -32,7 +32,7 @@ class database{
         }
         // with filter
         if(collectionName == "world"){
-            let data = dbRef.child("world_index").orderByKey().equalTo(filter['keyword']);
+            let data = dbRef.child("world_index").orderByKey().equalTo(filter['keyword']).limitToFirst(num);
             return new Promise(function(resolve, reject){
                 data.on('value',function(snapshot){
                     console.log(snapshot.val())
@@ -50,7 +50,7 @@ class database{
             });
             
         }else if(collectionName == "us_restaurant"){
-            let data = dbRef.child("yelp_index").orderByKey().equalTo(filter['keyword']);
+            let data = dbRef.child("yelp_index").orderByKey().equalTo(filter['keyword']).limitToFirst(num);
             return new Promise(function(resolve, reject){
                 data.on('value',function(snapshot){
                     let arrData = Object.values(snapshot.val())[0];

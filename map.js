@@ -15,13 +15,11 @@ class Map {
         });
     }
 
-    addMarker(name, longitude,latitude) {
-        let long = parseFloat(longitude);
-        let lat = parseFloat(latitude);
-        console.log(typeof(long), typeof(lat))
-        console.log(long, lat)
+    addMarker(name, long,lat) {
+        long = parseFloat(long);
+        lat = parseFloat(lat);
         let iconFeature = new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([lat, long])),
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
         });
         this.map.addLayer(new ol.layer.Vector({
             source: new ol.source.Vector({
@@ -39,8 +37,8 @@ class Map {
                 })
             })
         }));
-        this.map.getView().setCenter(ol.proj.transform([lat, long], 'EPSG:4326', 'EPSG:3857'));  
-        this.map.getView().setZoom(15);
+        // this.map.getView().setCenter(ol.proj.transform([lat, long], 'EPSG:4326', 'EPSG:3857'));  
+        this.map.getView().setZoom(1);
         
     }
 
