@@ -74,6 +74,12 @@ td, th {
     max-width: 150px;
 }
 
+/* map */
+.map{
+    height: 600px;
+    width: 100%;
+}
+
 /* pagination */
 /* .pagination{
     display: flex;
