@@ -1,3 +1,5 @@
+// HEllO
+
 import 'jquery'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-table/dist/bootstrap-table.css'
@@ -11,7 +13,7 @@ import '../assets/css/index.css'
 let index_table = {
     'world': 'world_index',
     'us_restaurant': 'yelp_index',
-    'world_restaurant': 'world_restaurant_index',
+    // 'world_restaurant': 'world_restaurant_index', 
 }
 
 
@@ -36,15 +38,15 @@ let tables = new Array(3);
         })
         let keywords = $('#keyword').val();
         getData(index_table[currDB], undefined, undefined, keywords).done((data) => {
-
-            console.log(tables)
+            console.log(data)
+            // console.log(tables)
             let obj = {}
             data.forEach((item, id) => {
                 // console.log(item,id);
                 let tbName = item[0];
                 obj[tbName] ? obj[tbName].push(item[2]) : obj[tbName] = [item[2]]
             })
-
+            console.log(obj)
             let allData = Object.values(obj)
 
             for (let i = 0; i < allData.length; i++) {
@@ -67,6 +69,7 @@ let tables = new Array(3);
             appendFilters();
             // ajax get data using RESTApi
             getData("country2").done((data) => {
+                console.log(data)
                 // conver data to list format [{d1},{d2}...]
                 let dataInArray = Object.keys(data).map((key) => {
                     return data[key]
