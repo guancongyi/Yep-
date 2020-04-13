@@ -5,30 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
-    <link rel="stylesheet" href="index.css">
-    <!-- jquery and bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- firebase -->
-    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
-    <!-- openlayer -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/css/ol.css" type="text/css">
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js"></script>
-
 </head>
 
 <body>
-
     <div class="container1">
         <div class="header">
             <h2 class="title">INF551 Project</h2>
-            <img class="header-img" src="sun.png"></img>
+            <!-- <img class="header-img" src="../assets/img/sun.png"></img> -->
         </div>
         <div class="container2">
-            
+
             <div class="filters">
                 <form id='select_db'>
                     <p><b>Please select database:</b></p>
@@ -38,18 +24,18 @@
                     <br><br>
                 </form>
                 <form id="filter_options"></form>
-                <input id="submit" type="submit" value="Submit">
+                <div id="submit_btn"><button id="submit" style="display: none;">Submit</button></div>
             </div>
 
             <div class="data">
-                <div id="map" class="map"></div>
+                <!-- <div id="map" class="map"></div> -->
                 <div id="tables_container">
-                    <div class="table-responsive">
-                        <table class="table" id="t1">
+                    <div >
+                        <button id="load_more1">load 100 more</button>
+                        <table id="t1">
                             <thead id="tb_header"></thead>
-                            <tbody id="tb_body"></tbody>
+                            <!-- <tbody id="tb_body"></tbody> -->
                         </table>
-                        
                     </div>
                     <br>
                     <div class="table-responsive">
@@ -67,9 +53,7 @@
             </div>
         </div>
     </div>
+
 </body>
-<script type="module" src="firebase.js"></script>
-<script type="module" src="map.js"></script>
-<script type="module" src="index.js"></script>
 
 </html>

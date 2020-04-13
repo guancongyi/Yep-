@@ -1,0 +1,93 @@
+@import "https://fonts.googleapis.com/css?family=Exo:400,700";
+
+html *{
+    font-family: "Exo", sans-serif;
+    
+}
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.container1{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+.header{
+    background: rgb(204, 174, 174);
+    display: flex;
+    text-align: center;
+
+    position: fixed;
+    top:0;
+    width: 100%;
+    height: auto;
+}
+
+
+.header-img{
+    width: 60px;
+    height: 60px;
+}
+
+.container2{
+    padding-top: 70px;
+    display: flex; 
+    
+}
+label{
+    display: block;
+}
+
+.filters{
+    padding-left: 1em ;
+    width: 300px;
+    min-width: 300px;
+    min-height: 900px ;
+    background: aquamarine;
+    height: 100%;
+    flex:0.5;
+}
+input:checked ~ span {
+    font-weight: bold;
+}
+
+.data{
+    min-width: 0;
+    margin-left: 1em;
+    /* flex:1.5; */
+}  
+
+/* data table */
+
+table {
+    text-align: center;
+}
+thead {
+    background-color: #EFEFEF;
+}
+thead, tbody {
+    display: block;
+}
+tbody {
+    max-height: 600px;
+}
+td, th {
+    min-width: 140px;
+    height: 25px;
+    word-wrap: break-word;
+    max-width: 140px;
+}
+
+/* map */
+.map{
+    padding-top: 1em;
+    height: 600px;
+    width: 100%;
+}
+/* pagination */
+.pagination-info{
+    display: none;
+}

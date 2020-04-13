@@ -1,78 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width"/>
-  <title>Title</title>
-</head>
-<style>
-table.entries {width: 100%;border-spacing: 0px;margin:0;}
-table.entries thead.fixed {position:fixed;top:0;}
-</style>
-<body>
-  <table class="entries" id="entriestable">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Location</th>
-            <th>DOB</th>
-            <th>Opt&nbsp;in</th>
-            <th>Added</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="name">Ricky Bobby</td>
-            <td>ricky.bobby@email.com</td>
-            <td class="addy"><i>Kent, GB</i></td>
-            <td class="dob">20/08/1984</td>
-            <td>Yes</td>
-            <td class="date">4 hours ago</td>
-        </tr>
-    </tbody>
-</table>
-</body>
-<script>
-TableThing = function(params) {
-    settings = {
-        table: $('#entriestable'),
-        thead: []
-    };
+// ajax: function (request) {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "https://inf551-d972f.firebaseio.com/country2.json",
+    //         contentType: "application/json;charset=utf-8",
+    //         dataType: "jsonp",
+    //         data: '',
+    //         jsonp: 'callback',
+    //         success: function (msg) {
 
-    this.fixThead = function() {
-        // empty our array to begin with
-        settings.thead = [];
-        // loop over the first row of td's in &lt;tbody> and get the widths of individual &lt;td>'s
-        $('tbody tr:eq(1) td', settings.table).each( function(i,v){
-            settings.thead.push($(v).width());
-        });
+    //             request.success({
+    //                 row: msg
+    //             });
+    //             let temp = msg.shift();
+    //             console.log(msg)
+    //             $('#table').bootstrapTable('load', msg);
+    //         },
+    //         error: function () {
+    //             alert("错误");
+    //         }
+    //     })
+    // },
+    // dataType: 'json',
+    // sidePagination: "server",
+    // contentType: 'application/json;charset=UTF-8',
+    // method: "get",  //使用get请求到服务器获取数据
+    // url: "https://inf551-d972f.firebaseio.com/country2.json", //获取数据的Servlet地址
+    // pagination: "true",
+    // onLoadSuccess: function (res) {
+    //     //加载成功时执行
 
-        // now loop over our array setting the widths we've got to the &lt;th>'s
-        for(i=0;i<settings.thead.length;i++) {
-            $('thead th:eq('+i+')', settings.table).width(settings.thead[i]);
-        }
+    //     // layer.msg("加载成功");
+    // },
+    // responseHandler: function (res) {
+    //     res.shift()
 
-        // here we attach to the scroll, adding the class 'fixed' to the &lt;thead> 
-        $(window).scroll(function() {
-            var windowTop = $(window).scrollTop();
-
-            if (windowTop > settings.table.offset().top) {
-                $("thead", settings.table).addClass("fixed");
-            }
-            else {
-                $("thead", settings.table).removeClass("fixed");
-            }
-        });
-    }
-}
-$(function(){
-    var table = new TableThing();
-    table.fixThead();
-    $(window).resize(function(){
-        table.fixThead();
-    });
-});
-
-</script>
-</html>
+    //     $(id).bootstrapTable('load',  ajaxRequest())
+    //     var objtmp = {
+    //         "rows": res.para,
+    //         "length": 238//总个数
+    //     }
+    //     return objtmp;
+    // },
+    // onLoadError: function (row) {
+    //     alert("加载数据失败");
+    // }
