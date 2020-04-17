@@ -42,6 +42,7 @@ label{
 }
 
 .filters{
+    padding-top: 1em;
     padding-left: 1em ;
     width: 300px;
     min-width: 300px;
@@ -71,14 +72,27 @@ thead {
 thead, tbody {
     display: block;
 }
-tbody {
+/* tbody {
     max-height: 600px;
-}
+} */
 td, th {
     min-width: 140px;
     height: 25px;
     word-wrap: break-word;
     max-width: 140px;
+}
+/* load more button */
+#load_more1{
+    display: none;
+    margin-bottom: 0.5em;
+}
+#load_more2{
+    display: none;
+    
+}
+#load_more3{
+    display: none;
+    
 }
 
 /* map */
@@ -88,6 +102,3 @@ td, th {
     width: 100%;
 }
 /* pagination */
-.pagination-info{
-    display: none;
-}

@@ -1,5 +1,3 @@
-// HEllO
-
 import 'jquery'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-table/dist/bootstrap-table.css'
@@ -21,6 +19,24 @@ let index_table = {
 let currDB = "";
 let tables = new Array(3);
 
+function onCellClicked(field, val, tb) {
+    // $(this.id).bootstrapTable('destroy');
+
+    if (tb == 'city' || tb == 'country2' || tb == 'countrylanguage') {
+        if (field == 'Code' || field == 'CountryCode') {
+            console.log(tb)
+            resetAllTables()
+            getData(index_table['world'], undefined, undefined, val).done((data) => {
+                const [names, rows] = formatObjectData(data);
+                for (let i = 0; i < rows.length; i++) {
+                    tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                }
+            })
+        }
+    } else {
+
+    }
+}
 
 // main
 (function init() {
@@ -30,38 +46,19 @@ let tables = new Array(3);
         }
     })
     $('#submit').click(function () {
-        tables.forEach((item) => {
-            item.destroy();
-            /******* DELETE TABLE HEADERS ******/
-            $(item.id).children("#tb_header").empty();
-            /******* DELETE TABLE HEADERS ******/
-        })
+        resetAllTables()
         let keywords = $('#keyword').val();
         getData(index_table[currDB], undefined, undefined, keywords).done((data) => {
-            console.log(data)
-            // console.log(tables)
-            let obj = {}
-            data.forEach((item, id) => {
-                // console.log(item,id);
-                let tbName = item[0];
-                obj[tbName] ? obj[tbName].push(item[2]) : obj[tbName] = [item[2]]
-            })
-            console.log(obj)
-            let allData = Object.values(obj)
-
-            for (let i = 0; i < allData.length; i++) {
-                tables[i] = new Table('#t' + (i + 1), undefined, allData[i], 50, true)
+            let {names, rows} = formatObjectData(data);
+            for (let i = 0; i < rows.length; i++) {
+                tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
             }
         })
     });
 
     // input change event listener
     $('#select_db input').on('change', function () {
-        console.log(tables)
-        tables.forEach((item) => {
-            console.log(item)
-            item.destroy()
-        })
+        resetAllTables()
         currDB = $('input[name=db]:checked', '#select_db').val();
 
         // get default data
@@ -75,26 +72,53 @@ let tables = new Array(3);
                     return data[key]
                 })
                 // render table based on data
-                tables[0] = new Table('#t1', "country2", dataInArray);
+                tables[0] = new Table('#t1', "country2", dataInArray, 50, false, onCellClicked);
+
             })
         } else if (currDB == 'world_restaurant') {
             appendFilters();
             // to do
         } else {
-
             appendFilters();
             getData("yelp_business").done((data) => {
                 let dataInArray = Object.keys(data).map((key) => {
                     return data[key]
                 })
                 // console.log(dataInArray)
-                tables[0] = new Table('#t1', "yelp_business", dataInArray);
+                tables[0] = new Table('#t1', "yelp_business", dataInArray, 50, false, onCellClicked);
             })
         }
 
     });
 })();
 
+function formatObjectData(data) {
+    console.log(data)
+    // console.log(tables)
+    let obj = {}
+    data.forEach((item, id) => {
+        // console.log(item,id);
+        let tbName = item[0];
+        obj[tbName] ? obj[tbName].push(item[2]) : obj[tbName] = [item[2]]
+    })
+    console.log(obj)
+    let allData = Object.values(obj)
+    let tblNames = Object.keys(obj)
+    console.log({
+        names: tblNames,
+        rows: allData
+    })
+    return {
+        names: tblNames,
+        rows: allData
+    };
+}
+
+function resetAllTables() {
+    tables.forEach((item) => {
+        item.destroy();
+    })
+}
 
 function appendFilters() {
     $('#filter_options').empty();

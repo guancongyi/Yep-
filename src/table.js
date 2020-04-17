@@ -1,12 +1,13 @@
 import getData from './request'
 
 export default class Table {
-    constructor(id, table, data, pageSize = 50, searchingMode = false) {
+    constructor(id, table, data, pageSize = 50, searchingMode = false, onClickCb) {
         this.id = id;
         this.table = table;
         this.data = data;
         this.loadBtn = '#load_more' + id[id.length - 1];
         this.pageSize = pageSize;
+        this.onClick = onClickCb;
 
         (searchingMode ?
             $(this.loadBtn).css('display', 'none') :
@@ -33,15 +34,17 @@ export default class Table {
 
     renderTable() {
         if (this.data != undefined) {
+            console.log(this.data)
             //  get headers and render headers with data-field set
             let headerItems = Object.keys(this.data[0]);
-            $(this.id).children("#tb_header").empty();
-            let res = "<tr>";
+            $(this.id).empty();
+            
+            let res = "<thead><tr>";
             for (let i = 0; i < headerItems.length; i++) {
                 res += `<th data-field="${headerItems[i]}">` + headerItems[i] + "</th>";
             }
-            res += "</tr>";
-            $(this.id).children("#tb_header").append(res);
+            res += "</tr></thead>";
+            $(this.id).append(res);
 
             // initialize table and render data section
 
@@ -60,8 +63,8 @@ export default class Table {
                 height: height,
                 pageSize: this.pageSize,
                 // showToggle: true,
-                onClickCell: (field, val, row, elem) => {
-                    this.onCellClicked(field, val, row, elem)
+                onClickCell: (field, val) => {
+                    this.onClick(field, val, this.table)
                 }
             });
         }else{
@@ -69,13 +72,12 @@ export default class Table {
         }
 
     }
-    onCellClicked(field, val, row, elem) {
-        alert(val)
-    }
+    
 
     destroy() {
-        console.log(this.id)
-        $(this.id).children("#tb_header").empty();
+
         $(this.id).bootstrapTable('destroy');
+        $(this.id).empty();
     }
 }
+
