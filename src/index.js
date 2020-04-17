@@ -27,7 +27,7 @@ function onCellClicked(field, val, tb) {
             console.log(tb)
             resetAllTables()
             getData(index_table['world'], undefined, undefined, val).done((data) => {
-                const [names, rows] = formatObjectData(data);
+                const {names, rows} = formatObjectData(data);
                 for (let i = 0; i < rows.length; i++) {
                     tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
                 }
@@ -94,7 +94,6 @@ function onCellClicked(field, val, tb) {
 
 function formatObjectData(data) {
     console.log(data)
-    // console.log(tables)
     let obj = {}
     data.forEach((item, id) => {
         // console.log(item,id);
@@ -104,10 +103,6 @@ function formatObjectData(data) {
     console.log(obj)
     let allData = Object.values(obj)
     let tblNames = Object.keys(obj)
-    console.log({
-        names: tblNames,
-        rows: allData
-    })
     return {
         names: tblNames,
         rows: allData
