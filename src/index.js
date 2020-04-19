@@ -3,19 +3,22 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-table/dist/bootstrap-table.css'
 import 'bootstrap-table/dist/bootstrap-table'
 import Table from './table'
+import { GET_DEFAULT, GET_FK, GET_SEARCH_RESULT} from './request'
 import getData from './request'
 
 import '../assets/css/index.css'
-// import OLMap from './map'
+import OLMap from './map'
 
 let index_table = {
     'world': 'world_index',
     'us_restaurant': 'yelp_index',
+    'business_id': 'yelp_bid_index',
+    'user_id': 'yelp_uid_index'
     // 'world_restaurant': 'world_restaurant_index', 
 }
 
 
-// let map = new OLMap('map');
+let map = "";
 let currDB = "";
 let tables = new Array(3);
 
@@ -33,8 +36,17 @@ function onCellClicked(field, val, tb) {
                 }
             })
         }
-    } else {
-
+    } else if (tb == 'yelp_tip' || tb == 'yelp_business' || tb == 'yelp_user') {
+        if (field == 'business_id' || field == 'user_id') {
+            resetAllTables()
+            // val is fk
+            getData(index_table[field], undefined, undefined, val, GET_FK).done((data) => {
+                const {names, rows} = formatObjectData(data);
+                for (let i = 0; i < rows.length; i++) {
+                    tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                }
+            })
+        }
     }
 }
 
@@ -45,14 +57,25 @@ function onCellClicked(field, val, tb) {
             tables[0].loadMore()
         }
     })
+    $('#load_more2').click(() => {
+        if (tables[1] != "") {
+            tables[1].loadMore()
+        }
+    })
+    // $('#load_more3').click(() => {
+    //     if (tables[2] != "") {
+    //         tables[2].loadMore()
+    //     }
+    // })
     $('#submit').click(function () {
         resetAllTables()
         let keywords = $('#keyword').val();
-        getData(index_table[currDB], undefined, undefined, keywords).done((data) => {
+        getData(index_table[currDB], undefined, undefined, keywords, GET_SEARCH_RESULT).done((data) => {
             let {names, rows} = formatObjectData(data);
             for (let i = 0; i < rows.length; i++) {
                 tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
             }
+            // map = new OLMap('map');
         })
     });
 
@@ -65,7 +88,7 @@ function onCellClicked(field, val, tb) {
         if (currDB == 'world') {
             appendFilters();
             // ajax get data using RESTApi
-            getData("country2").done((data) => {
+            getData("country2", undefined, undefined, undefined, GET_DEFAULT).done((data) => {
                 console.log(data)
                 // conver data to list format [{d1},{d2}...]
                 let dataInArray = Object.keys(data).map((key) => {
@@ -79,14 +102,20 @@ function onCellClicked(field, val, tb) {
             appendFilters();
             // to do
         } else {
+            
             appendFilters();
-            getData("yelp_business").done((data) => {
-                let dataInArray = Object.keys(data).map((key) => {
-                    return data[key]
+            let tableList = ['yelp_business', 'yelp_user']
+            for (let i = 0; i < 3; i++){
+                getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
+                    console.log(data)
+                    let dataInArray = Object.keys(data).map((key) => {
+                        return data[key]
+                    })
+                    // console.log(dataInArray)
+                    tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
                 })
-                // console.log(dataInArray)
-                tables[0] = new Table('#t1', "yelp_business", dataInArray, 50, false, onCellClicked);
-            })
+            }
+            
         }
 
     });

@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["yelp2", "yelp"]
+            "args": ["yelp", "yelp"]
         }
     ]
 }

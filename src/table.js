@@ -1,4 +1,5 @@
 import getData from './request'
+import { GET_DEFAULT } from './request'
 
 export default class Table {
     constructor(id, table, data, pageSize = 50, searchingMode = false, onClickCb) {
@@ -12,13 +13,17 @@ export default class Table {
         (searchingMode ?
             $(this.loadBtn).css('display', 'none') :
             $(this.loadBtn).css('display', 'block'))
-        this.renderTable()
+            
+            setTimeout(function(){
+                
+            },3000)
+            this.renderTable()
     }
 
     loadMore() {
         let count = this.data.length;
         console.log(count)
-        getData(this.table, count, count + 50).done((res) => {
+        getData(this.table, count, count + 50, undefined, GET_DEFAULT).done((res) => {
             let dataInArray = Object.keys(res).map((key) => {
                 return res[key]
             })
@@ -38,7 +43,7 @@ export default class Table {
             //  get headers and render headers with data-field set
             let headerItems = Object.keys(this.data[0]);
             $(this.id).empty();
-            
+
             let res = "<thead><tr>";
             for (let i = 0; i < headerItems.length; i++) {
                 res += `<th data-field="${headerItems[i]}">` + headerItems[i] + "</th>";
@@ -49,11 +54,11 @@ export default class Table {
             // initialize table and render data section
 
             let height = 0;
-            if (this.data.length < 10){
+            if (this.data.length < 10) {
                 height = 0;
-            }else if(this.data.length > 10 && this.data.length < 50){
+            } else if (this.data.length > 10 && this.data.length < 50) {
                 height = 550;
-            }else{
+            } else {
                 height = 650;
             }
 
@@ -67,12 +72,12 @@ export default class Table {
                     this.onClick(field, val, this.table)
                 }
             });
-        }else{
+        } else {
             // this.destroy()
         }
 
     }
-    
+
 
     destroy() {
 
