@@ -10,47 +10,51 @@ body{
 }
 
 .container1{
-
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
+    overflow: hidden;
 }
+
+/* Header Part */
 .header{
-    background: rgb(204, 174, 174);
-    display: flex;
-    text-align: center;
-
-    position: fixed;
-    top:0;
+    background: rgb(247, 171, 171);
+    overflow: hidden;
     width: 100%;
-    height: auto;
 }
 
+#title{
+    display: inline-block;
+    height: 60px;
+}
+#title h2{
+    margin-top: 10px;
+}
 
-.header-img{
+#header-img{
+    vertical-align: middle;
+    float: left;
     width: 60px;
     height: 60px;
 }
 
+/* Data part */
 .container2{
-    padding-top: 70px;
     display: flex; 
-    
-}
-label{
-    display: block;
 }
 
 .filters{
-    padding-top: 1em;
-    padding-left: 1em ;
+    padding: 1em;
     width: 300px;
     min-width: 300px;
-    min-height: 900px ;
+    min-height: 200vh;
     background: aquamarine;
     height: 100%;
     flex:0.5;
 }
+
+label{
+    display: block;
+}
+
+
 input:checked ~ span {
     font-weight: bold;
 }
@@ -62,37 +66,52 @@ input:checked ~ span {
 }  
 
 /* data table */
-
 table {
     text-align: center;
 }
 thead {
-    background-color: #EFEFEF;
+    background-color: rgb(92, 89, 89);
 }
 thead, tbody {
     display: block;
 }
-/* tbody {
-    max-height: 600px;
-} */
+
 td, th {
     min-width: 140px;
     height: 25px;
     word-wrap: break-word;
     max-width: 140px;
 }
-/* load more button */
-#load_more1{
-    display: none;
-    margin-bottom: 0.5em;
+tr.detail-view{
+    text-align: left;
 }
-#load_more2{
-    display: none;
-    
+thead tr th:first-child,
+tbody tr td:first-child {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  word-break: break-all;
 }
-#load_more3{
+
+.fk-col{
+    color: rgb(152, 152, 219);
+}
+
+.tb_title{
+    overflow: hidden;
+    text-align: center;
+}
+.tb_title h3{
+    display: block;
+}
+/* load more button and submit button */
+#submit_btn{
+    margin-top: 0.2em;
+}
+.loadMoreBtn{
     display: none;
-    
+    margin-bottom: 0.2em;
+    float: left;
 }
 
 /* map */

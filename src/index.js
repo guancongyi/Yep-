@@ -1,13 +1,14 @@
 import 'jquery'
+import img from '../assets/img/sun.png';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-table/dist/bootstrap-table.css'
 import 'bootstrap-table/dist/bootstrap-table'
 import Table from './table'
-import { GET_DEFAULT, GET_FK, GET_SEARCH_RESULT} from './request'
+import { GET_DEFAULT, GET_FK, GET_SEARCH_RESULT } from './request'
 import getData from './request'
 
 import '../assets/css/index.css'
-import OLMap from './map'
+// import OLMap from './map'
 
 let index_table = {
     'world': 'world_index',
@@ -18,10 +19,9 @@ let index_table = {
 }
 
 
-let map = "";
+// let map = "";
 let currDB = "";
 let tables = new Array(3);
-
 function onCellClicked(field, val, tb) {
     // $(this.id).bootstrapTable('destroy');
 
@@ -29,8 +29,8 @@ function onCellClicked(field, val, tb) {
         if (field == 'Code' || field == 'CountryCode') {
             console.log(tb)
             resetAllTables()
-            getData(index_table['world'], undefined, undefined, val).done((data) => {
-                const {names, rows} = formatObjectData(data);
+            getData(index_table['world'], undefined, undefined, val, GET_SEARCH_RESULT).done((data) => {
+                const { names, rows } = formatObjectData(data);
                 for (let i = 0; i < rows.length; i++) {
                     tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
                 }
@@ -41,7 +41,7 @@ function onCellClicked(field, val, tb) {
             resetAllTables()
             // val is fk
             getData(index_table[field], undefined, undefined, val, GET_FK).done((data) => {
-                const {names, rows} = formatObjectData(data);
+                const { names, rows } = formatObjectData(data);
                 for (let i = 0; i < rows.length; i++) {
                     tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
                 }
@@ -52,6 +52,9 @@ function onCellClicked(field, val, tb) {
 
 // main
 (function init() {
+    var homeImg = $('#header-img');
+    homeImg.attr('src', img)
+
     $('#load_more1').click(() => {
         if (tables[0] != "") {
             tables[0].loadMore()
@@ -62,16 +65,16 @@ function onCellClicked(field, val, tb) {
             tables[1].loadMore()
         }
     })
-    // $('#load_more3').click(() => {
-    //     if (tables[2] != "") {
-    //         tables[2].loadMore()
-    //     }
-    // })
+    $('#load_more3').click(() => {
+        if (tables[2] != "") {
+            tables[2].loadMore()
+        }
+    })
     $('#submit').click(function () {
         resetAllTables()
         let keywords = $('#keyword').val();
         getData(index_table[currDB], undefined, undefined, keywords, GET_SEARCH_RESULT).done((data) => {
-            let {names, rows} = formatObjectData(data);
+            let { names, rows } = formatObjectData(data);
             for (let i = 0; i < rows.length; i++) {
                 tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
             }
@@ -88,24 +91,8 @@ function onCellClicked(field, val, tb) {
         if (currDB == 'world') {
             appendFilters();
             // ajax get data using RESTApi
-            getData("country2", undefined, undefined, undefined, GET_DEFAULT).done((data) => {
-                console.log(data)
-                // conver data to list format [{d1},{d2}...]
-                let dataInArray = Object.keys(data).map((key) => {
-                    return data[key]
-                })
-                // render table based on data
-                tables[0] = new Table('#t1', "country2", dataInArray, 50, false, onCellClicked);
-
-            })
-        } else if (currDB == 'world_restaurant') {
-            appendFilters();
-            // to do
-        } else {
-            
-            appendFilters();
-            let tableList = ['yelp_business', 'yelp_user']
-            for (let i = 0; i < 3; i++){
+            let tableList = ['country2', 'city', 'countrylanguage']
+            for (let i = 0; i < tableList.length; i++) {
                 getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
                     console.log(data)
                     let dataInArray = Object.keys(data).map((key) => {
@@ -115,7 +102,22 @@ function onCellClicked(field, val, tb) {
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
                 })
             }
-            
+        } else if (currDB == 'world_restaurant') {
+            appendFilters();
+            // to do
+        } else {
+            appendFilters();
+            let tableList = ['yelp_business', 'yelp_user']
+            for (let i = 0; i < tableList.length; i++) {
+                getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
+                    console.log(data)
+                    let dataInArray = Object.keys(data).map((key) => {
+                        return data[key]
+                    })
+                    console.log(i)
+                    tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
+                })
+            }
         }
 
     });
@@ -139,6 +141,7 @@ function formatObjectData(data) {
 }
 
 function resetAllTables() {
+    
     tables.forEach((item) => {
         item.destroy();
     })
@@ -146,7 +149,7 @@ function resetAllTables() {
 
 function appendFilters() {
     $('#filter_options').empty();
-    $('#filter_options').append('<p><b>Keyword Search: </b></p>');
+    $('#filter_options').append('<p>Keyword Search: </p>');
     $('#filter_options').append('<input id="keyword" placeholder="Enter keywords here"></input>');
     $('#submit').css('display', 'block');
 }

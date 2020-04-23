@@ -1,6 +1,14 @@
 import getData from './request'
 import { GET_DEFAULT } from './request'
+import '@fortawesome/fontawesome-free/css/all.css'
 
+
+export let FK_COLUMN = {
+    'Code':1,
+    'CountryCode':1,
+    'business_id':1,
+    'user_id':1
+}
 export default class Table {
     constructor(id, table, data, pageSize = 50, searchingMode = false, onClickCb) {
         this.id = id;
@@ -9,15 +17,16 @@ export default class Table {
         this.loadBtn = '#load_more' + id[id.length - 1];
         this.pageSize = pageSize;
         this.onClick = onClickCb;
-
+        this.tableTitleId = this.id+ "_name"
+        // set table name
+        $(this.tableTitleId).text(`Data from Table ${this.table}`);
+        // set searching mode
         (searchingMode ?
             $(this.loadBtn).css('display', 'none') :
             $(this.loadBtn).css('display', 'block'))
-            
-            setTimeout(function(){
-                
-            },3000)
-            this.renderTable()
+
+
+        this.renderTable()
     }
 
     loadMore() {
@@ -37,22 +46,20 @@ export default class Table {
         })
     }
 
+
+
     renderTable() {
         if (this.data != undefined) {
-            console.log(this.data)
+            let columns = [];
+            
+            $(this.id).empty();
             //  get headers and render headers with data-field set
             let headerItems = Object.keys(this.data[0]);
-            $(this.id).empty();
-
-            let res = "<thead><tr>";
             for (let i = 0; i < headerItems.length; i++) {
-                res += `<th data-field="${headerItems[i]}">` + headerItems[i] + "</th>";
+                columns.push({field:headerItems[i], title: headerItems[i]});
+                
             }
-            res += "</tr></thead>";
-            $(this.id).append(res);
-
             // initialize table and render data section
-
             let height = 0;
             if (this.data.length < 10) {
                 height = 0;
@@ -63,10 +70,34 @@ export default class Table {
             }
 
             $(this.id).bootstrapTable({
+                detailView: true,
+                detailViewIcon: true,
+                
+                columns: columns,
                 data: this.data,
                 pagination: true,
                 height: height,
                 pageSize: this.pageSize,
+                headerStyle: (column)=>{
+
+                    if (FK_COLUMN[column.title]){
+                        return {
+                            css: { 'font-weight': 'bold'},
+                            classes: 'fk-col'
+                        }
+                    }
+                    return {
+                        css: { 'font-weight': 'bold', 'color': 'white'},
+                    }
+                    
+                },
+                onExpandRow: (index, row, $detail)=>{
+                    let html = []
+                    $.each(row, function (key, value) {
+                        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+                    })
+                    $detail.append(html.join(' '))
+                },
                 // showToggle: true,
                 onClickCell: (field, val) => {
                     this.onClick(field, val, this.table)
@@ -80,7 +111,8 @@ export default class Table {
 
 
     destroy() {
-
+        $(this.loadBtn).css('display', 'none');
+        $(this.tableTitleId).empty();
         $(this.id).bootstrapTable('destroy');
         $(this.id).empty();
     }
