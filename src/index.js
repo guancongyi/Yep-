@@ -14,8 +14,10 @@ let index_table = {
     'world': 'world_index',
     'us_restaurant': 'yelp_index',
     'business_id': 'yelp_bid_index',
-    'user_id': 'yelp_uid_index'
-    // 'world_restaurant': 'world_restaurant_index', 
+    'user_id': 'yelp_uid_index',
+    'RestaurantId': 'zomato_rest_fk',
+    'CountryCode': 'zomato_country_fk',
+    'world_restaurant': 'zomato_index' 
 }
 
 // Navigation
@@ -50,7 +52,8 @@ function onCellClicked(field, val, tb) {
     } else if (tb == 'zomato_restaurant' || tb == 'zomato_country' || tb == 'zomato_rc') {
         if (field == 'RestaurantId' || field == 'CountryCode') {
             resetAllTables()
-            getData(index_table['world_rest'], undefined, undefined, val, GET_SEARCH_RESULT).done((data) => {
+            console.log(val)
+            getData(index_table[field], undefined, undefined, val, GET_FK).done((data) => {
                 const { names, rows } = formatObjectData(data);
                 for (let i = 0; i < rows.length; i++) {
                     tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
@@ -101,7 +104,7 @@ function submit(){
     $('#select_db input').on('change', function () {
         resetAllTables()
         currDB = $('input[name=db]:checked', '#select_db').val();
-
+        console.log(currDB)
         // get default data
         if (currDB == 'world') {
             appendFilters();
