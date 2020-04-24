@@ -7,8 +7,20 @@ export let FK_COLUMN = {
     'Code':1,
     'CountryCode':1,
     'business_id':1,
-    'user_id':1
+    'user_id':1,
+    'RestaurantId':1,
+    'CountryCode':1
 }
+
+let TableOrder = {
+    'country2':['Code', 'Name', 'LocalName','HeadOfState', 'Region', 'Continent', 'IndepYear', 'Population','LifeExpectancy', 'SurfaceArea', 'GovernmentForm', 'GNP', 'GNPOld','Capital','Code2'],
+    'city':['CountryCode', 'Name', 'District', 'Population', 'ID'],
+    'countrylanguage':['CountryCode', 'Language', 'Percentage', 'IsOfficial'],
+    'yelp_business': ['business_id', 'name', 'stars', 'city','state','address','postal_code','review_count','is_open', 'neighborhood', 'latitude', 'longitude', 'categories'],
+    'yelp_user':['user_id', 'name', 'yelp_since', 'review_count','average_stars','compliment_photos', 'useful', 'cool', 'fans', 'funny'],
+    'yelp_tip': ['user_id', 'text', 'business_id', 'compliment_count', 'date']
+}
+
 export default class Table {
     constructor(id, table, data, pageSize = 50, searchingMode = false, onClickCb) {
         this.id = id;
@@ -33,6 +45,7 @@ export default class Table {
         let count = this.data.length;
         console.log(count)
         getData(this.table, count, count + 50, undefined, GET_DEFAULT).done((res) => {
+            
             let dataInArray = Object.keys(res).map((key) => {
                 return res[key]
             })
@@ -46,18 +59,15 @@ export default class Table {
         })
     }
 
-
-
     renderTable() {
         if (this.data != undefined) {
             let columns = [];
             
             $(this.id).empty();
             //  get headers and render headers with data-field set
-            let headerItems = Object.keys(this.data[0]);
+            let headerItems = TableOrder[this.table];
             for (let i = 0; i < headerItems.length; i++) {
                 columns.push({field:headerItems[i], title: headerItems[i]});
-                
             }
             // initialize table and render data section
             let height = 0;
@@ -72,7 +82,6 @@ export default class Table {
             $(this.id).bootstrapTable({
                 detailView: true,
                 detailViewIcon: true,
-                
                 columns: columns,
                 data: this.data,
                 pagination: true,

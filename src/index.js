@@ -18,7 +18,7 @@ let index_table = {
     // 'world_restaurant': 'world_restaurant_index', 
 }
 
-
+// Navigation
 // let map = "";
 let currDB = "";
 let tables = new Array(3);
@@ -47,40 +47,55 @@ function onCellClicked(field, val, tb) {
                 }
             })
         }
+    } else if (tb == 'zomato_restaurant' || tb == 'zomato_country' || tb == 'zomato_rc') {
+        if (field == 'RestaurantId' || field == 'CountryCode') {
+            resetAllTables()
+            getData(index_table['world_rest'], undefined, undefined, val, GET_SEARCH_RESULT).done((data) => {
+                const { names, rows } = formatObjectData(data);
+                for (let i = 0; i < rows.length; i++) {
+                    tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                }
+            })
+        }
     }
 }
 
-// main
+// Search
+function submit(){
+    resetAllTables()
+    let keywords = $('#keyword').val();
+    getData(index_table[currDB], undefined, undefined, keywords, GET_SEARCH_RESULT).done((data) => {
+        let { names, rows } = formatObjectData(data);
+        for (let i = 0; i < rows.length; i++) {
+            tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+        }
+        // map = new OLMap('map');
+    })
+}
+
+
+// Main
 (function init() {
     var homeImg = $('#header-img');
     homeImg.attr('src', img)
 
-    $('#load_more1').click(() => {
-        if (tables[0] != "") {
-            tables[0].loadMore()
+    $('#load_more1, #load_more2, #load_more3').click((event) => {
+        let tid = parseInt(event.currentTarget.value);
+        console.log(tid, typeof(tid))
+        if(tables[tid] != ""){
+            tables[tid].loadMore();
         }
-    })
-    $('#load_more2').click(() => {
-        if (tables[1] != "") {
-            tables[1].loadMore()
-        }
-    })
-    $('#load_more3').click(() => {
-        if (tables[2] != "") {
-            tables[2].loadMore()
-        }
-    })
-    $('#submit').click(function () {
-        resetAllTables()
-        let keywords = $('#keyword').val();
-        getData(index_table[currDB], undefined, undefined, keywords, GET_SEARCH_RESULT).done((data) => {
-            let { names, rows } = formatObjectData(data);
-            for (let i = 0; i < rows.length; i++) {
-                tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
-            }
-            // map = new OLMap('map');
-        })
     });
+    
+    $('#keyword').on('keydown', (e)=>{
+        console.log(e.which)
+        if(e.which == 13){
+            submit();
+        }
+    })
+    $('#submit').click(()=>{
+        submit();
+    })
 
     // input change event listener
     $('#select_db input').on('change', function () {
@@ -104,7 +119,17 @@ function onCellClicked(field, val, tb) {
             }
         } else if (currDB == 'world_restaurant') {
             appendFilters();
-            // to do
+            let tableList = ['zomato_restaurant', 'zomato_country', 'zomato_rc']
+            for (let i = 0; i < tableList.length; i++){
+                getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
+                    console.log(data)
+                    let dataInArray = Object.keys(data).map((key) => {
+                        return data[key]
+                    })
+                    console.log(i)
+                    tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
+                })
+            }
         } else {
             appendFilters();
             let tableList = ['yelp_business', 'yelp_user']
@@ -150,6 +175,6 @@ function resetAllTables() {
 function appendFilters() {
     $('#filter_options').empty();
     $('#filter_options').append('<p>Keyword Search: </p>');
-    $('#filter_options').append('<input id="keyword" placeholder="Enter keywords here"></input>');
+    $('#keyword').css('display', 'block');
     $('#submit').css('display', 'block');
 }
