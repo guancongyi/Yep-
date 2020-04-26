@@ -35,7 +35,7 @@ export default class Table {
         this.onClick = onClickCb;
         this.tableTitleId = this.id + "_name"
         // set table name
-        $(this.tableTitleId).text(`Data from Table ${this.table}`);
+        $(this.tableTitleId).text(`Table ${this.table}`);
         // set searching mode
         (searchingMode ?
             $(this.loadBtn).css('display', 'none') :

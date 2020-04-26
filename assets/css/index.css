@@ -44,6 +44,8 @@ body{
     padding: 1em;
     width: 300px;
     min-width: 300px;
+    max-width: 300px;
+
     min-height: 200vh;
     background: aquamarine;
     height: 100%;
@@ -103,7 +105,7 @@ tbody tr td:first-child {
 
 .tb_title{
     overflow: hidden;
-    text-align: center;
+    text-align: left;
 }
 .tb_title h3{
     display: block;
@@ -115,7 +117,7 @@ tbody tr td:first-child {
 .loadMoreBtn{
     display: none;
     margin-bottom: 0.2em;
-    float: left;
+    float: right;
 }
 
 /* map */

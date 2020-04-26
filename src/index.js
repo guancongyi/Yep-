@@ -28,15 +28,18 @@ let tables = new Array(3);
 
 // Navigation
 function onCellClicked(field, val, tb) {
-    console.log(window.performance.memory)
+
     if (tb == 'city' || tb == 'country2' || tb == 'countrylanguage') {
         if (field == 'Code' || field == 'CountryCode') {
             resetAllTables()
-            getData(index_table['world'], undefined, undefined, val, GET_SEARCH_RESULT).done((data) => {
+            getData(index_table['world'], undefined, undefined, val.toLowerCase(), GET_SEARCH_RESULT).done((data) => {
+                let total = 0;
                 const { names, rows } = formatObjectData(data);
                 for (let i = 0; i < rows.length; i++) {
-                    tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                    tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked);
                 }
+                total += data.length;
+                $('#search_info').text(total + ' Records found.');
             })
         }
     } else if (tb == 'yelp_tip' || tb == 'yelp_business' || tb == 'yelp_user') {
@@ -46,6 +49,7 @@ function onCellClicked(field, val, tb) {
                 if (data == null) {
                     alert('Sorry, No Results')
                 } else {
+                    let total = 0;
                     resetAllTables()
                     const { names, rows } = formatObjectData(data);
                     let points = []
@@ -53,8 +57,10 @@ function onCellClicked(field, val, tb) {
                         if (names[i] == 'yelp_business') {
                             points.push([rows[i][0].longitude, rows[i][0].latitude])
                         }
-                        tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                        tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked);
                     }
+                    total += data.length;
+                    $('#search_info').text(total + ' Records found.');
 
                     // when searching business_id
                     if (field == 'business_id') {
@@ -71,16 +77,18 @@ function onCellClicked(field, val, tb) {
         }
     } else if (tb == 'zomato_restaurant' || tb == 'zomato_country' || tb == 'zomato_rc') {
         if (field == 'RestaurantId' || field == 'CountryCode') {
-
             getData(index_table[field], undefined, undefined, val, GET_FK).done((data) => {
                 if (data == null) {
                     alert('Sorry, No Results')
                 } else {
+                    let total = 0;
                     resetAllTables()
                     const { names, rows } = formatObjectData(data);
                     for (let i = 0; i < rows.length; i++) {
-                        tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                        tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked);
                     }
+                    total += data.length;
+                    $('#search_info').text(total + ' Records found.');
                 }
 
             })
@@ -90,7 +98,7 @@ function onCellClicked(field, val, tb) {
 
 // Search
 function submit() {
-    console.log(window.performance.memory)
+    let total = 0;
 
     let keywords = $('#keyword').val().split(' ');
     // store all promises in an array
@@ -107,7 +115,7 @@ function submit() {
         for (let i = 0; i < data.length; i++) {
             Array.prototype.push.apply(dataInOne, data[i])
         }
-
+        $('#search_info').text(dataInOne.length + ' Records found.')
         // categorize data ,
         let categories = {}
         dataInOne.forEach((item, id) => {
@@ -147,12 +155,12 @@ function submit() {
                 }
                 sortedData.push(temp)
             }
-            
+
             //render table and map
             for (let i = 0; i < sortedData.length; i++) {
                 // table
                 tables[i] = new Table('#t' + (i + 1), Object.keys(categories)[i], sortedData[i], 50, true, onCellClicked)
-                
+
                 // map
                 if (Object.keys(categories)[i] == 'yelp_business') {
                     let points = []
@@ -193,8 +201,8 @@ function submit() {
 
     // input change event listener
     $('#select_db input').on('change', function () {
-        console.log(window.performance.memory)
-
+        $('#search_info').text('');
+        let total = 0;
         toggleMap(0)
         // clearMap()
         resetAllTables()
@@ -211,6 +219,7 @@ function submit() {
                         return data[key]
                     })
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
+
                 })
             }
         } else if (currDB == 'world_restaurant') {
@@ -222,6 +231,7 @@ function submit() {
                         return data[key]
                     })
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
+
                 })
             }
         } else {
@@ -231,16 +241,21 @@ function submit() {
                 appendFilters();
                 console.log(loc)
                 let map = new OLMap('map');
-                map.addMarkers("", [[loc[0], loc[1]]], 12)
+                map.addMarkers("", [[loc[0], loc[1]]], 10)
                 let tableList = ['yelp_business', 'yelp_user']
                 for (let i = 0; i < tableList.length; i++) {
                     getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
+
                         let dataInArray = Object.keys(data).map((key) => {
                             return data[key]
                         })
                         tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
+
                     })
+
                 }
+
+
             })
 
         }
