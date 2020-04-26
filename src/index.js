@@ -28,6 +28,7 @@ let tables = new Array(3);
 
 // Navigation
 function onCellClicked(field, val, tb) {
+    console.log(window.performance.memory)
     if (tb == 'city' || tb == 'country2' || tb == 'countrylanguage') {
         if (field == 'Code' || field == 'CountryCode') {
             resetAllTables()
@@ -40,23 +41,48 @@ function onCellClicked(field, val, tb) {
         }
     } else if (tb == 'yelp_tip' || tb == 'yelp_business' || tb == 'yelp_user') {
         if (field == 'business_id' || field == 'user_id') {
-            resetAllTables()
             // val is fk
             getData(index_table[field], undefined, undefined, val, GET_FK).done((data) => {
-                const { names, rows } = formatObjectData(data);
-                for (let i = 0; i < rows.length; i++) {
-                    tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                if (data == null) {
+                    alert('Sorry, No Results')
+                } else {
+                    resetAllTables()
+                    const { names, rows } = formatObjectData(data);
+                    let points = []
+                    for (let i = 0; i < rows.length; i++) {
+                        if (names[i] == 'yelp_business') {
+                            points.push([rows[i][0].longitude, rows[i][0].latitude])
+                        }
+                        tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                    }
+
+                    // when searching business_id
+                    if (field == 'business_id') {
+                        clearMap()
+                        toggleMap(1)
+                        let map = new OLMap('map');
+                        map.addMarkers('', points, 15)
+                    } else {
+                        toggleMap(0)
+                    }
                 }
+
             })
         }
     } else if (tb == 'zomato_restaurant' || tb == 'zomato_country' || tb == 'zomato_rc') {
         if (field == 'RestaurantId' || field == 'CountryCode') {
-            resetAllTables()
+
             getData(index_table[field], undefined, undefined, val, GET_FK).done((data) => {
-                const { names, rows } = formatObjectData(data);
-                for (let i = 0; i < rows.length; i++) {
-                    tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                if (data == null) {
+                    alert('Sorry, No Results')
+                } else {
+                    resetAllTables()
+                    const { names, rows } = formatObjectData(data);
+                    for (let i = 0; i < rows.length; i++) {
+                        tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+                    }
                 }
+
             })
         }
     }
@@ -64,7 +90,8 @@ function onCellClicked(field, val, tb) {
 
 // Search
 function submit() {
-    resetAllTables()
+    console.log(window.performance.memory)
+
     let keywords = $('#keyword').val().split(' ');
     // store all promises in an array
     let allProm = new Array(keywords.length);
@@ -73,6 +100,7 @@ function submit() {
         allProm[i] = getData(index_table[currDB], undefined, undefined, word, GET_SEARCH_RESULT)
     }
 
+    // execute all promises
     Promise.all(allProm).then(data => {
         // make one
         let dataInOne = []
@@ -80,51 +108,64 @@ function submit() {
             Array.prototype.push.apply(dataInOne, data[i])
         }
 
-        // sort data based on their categories,
+        // categorize data ,
         let categories = {}
         dataInOne.forEach((item, id) => {
             // console.log(item,id);
             let tbName = item[0];
             categories[tbName] ? categories[tbName].push(item) : categories[tbName] = [item]
         })
-        console.log(Object.entries(categories))
 
-        // and for each categories sort them based on the occurances
-        // then store them in heap
-        let dataInCate = []
-        for (let category in categories) {
-            console.log(category)
-            let cateDatas = categories[category];
-            let dict = {};
-            for (let i = 0; i < cateDatas.length; i++) {
-                let strK = JSON.stringify(cateDatas[i][2])
-                if (dict[strK] == undefined) {
-                    dict[strK] = 1
-                } else {
-                    dict[strK] += 1
+        // sort data using heap
+        if (Object.entries(categories).length == 0) {
+            alert('Sorry, No Results')
+        } else {
+            resetAllTables()
+            // and for each categories sort them based on the occurances
+            // then store them in heap
+            let sortedData = []
+            for (let category in categories) {
+                console.log(category)
+                let cateDatas = categories[category];
+                let dict = {};
+                for (let i = 0; i < cateDatas.length; i++) {
+                    let strK = JSON.stringify(cateDatas[i][2])
+                    if (dict[strK] == undefined) dict[strK] = 1
+                    else dict[strK] += 1
+                }
+
+                // put data in heap
+                let maxHeap = new MaxHeap()
+                for (let [k, v] of Object.entries(dict)) {
+                    maxHeap.insert(v, k)
+                }
+
+                // pop data to container
+                let temp = []
+                while (maxHeap.size() != 0) {
+                    temp.push(JSON.parse(maxHeap.extractRoot().getValue()))
+                }
+                sortedData.push(temp)
+            }
+            
+            //render table and map
+            for (let i = 0; i < sortedData.length; i++) {
+                // table
+                tables[i] = new Table('#t' + (i + 1), Object.keys(categories)[i], sortedData[i], 50, true, onCellClicked)
+                
+                // map
+                if (Object.keys(categories)[i] == 'yelp_business') {
+                    let points = []
+                    sortedData[i].forEach((item) => {
+                        points.push([item.longitude, item.latitude])
+                    })
+                    clearMap()
+                    let map = new OLMap('map');
+                    map.addMarkers('', points, 15)
                 }
             }
-            console.log(dict)
-            // use Heap to sort them
-            let maxHeap = new MaxHeap()
-            for (let [k, v] of Object.entries(dict)) {
-                maxHeap.insert(v, k)
-            }
-
-            let temp = []
-            while (maxHeap.size() != 0) {
-                temp.push(JSON.parse(maxHeap.extractRoot().getValue()))
-            }
-            dataInCate.push(temp)
-        }
-
-        console.log(dataInCate)
-
-        for (let i = 0; i < dataInCate.length; i++) {
-            tables[i] = new Table('#t' + (i + 1), Object.keys(categories)[i], dataInCate[i], 50, true, onCellClicked)
         }
     })
-
 }
 
 
@@ -152,7 +193,10 @@ function submit() {
 
     // input change event listener
     $('#select_db input').on('change', function () {
+        console.log(window.performance.memory)
+
         toggleMap(0)
+        // clearMap()
         resetAllTables()
         currDB = $('input[name=db]:checked', '#select_db').val();
         console.log(currDB)
@@ -181,14 +225,13 @@ function submit() {
                 })
             }
         } else {
-            toggleMap(1);
             // get user's location
             getLocation().then((loc) => {
+                toggleMap(1);
                 appendFilters();
                 console.log(loc)
                 let map = new OLMap('map');
-                map.addMarker("", loc[0],loc[1],12)
-
+                map.addMarkers("", [[loc[0], loc[1]]], 12)
                 let tableList = ['yelp_business', 'yelp_user']
                 for (let i = 0; i < tableList.length; i++) {
                     getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
@@ -199,7 +242,7 @@ function submit() {
                     })
                 }
             })
-            
+
         }
 
     });
@@ -228,6 +271,10 @@ function resetAllTables() {
     })
 }
 
+function clearMap() {
+    $('#map').empty();
+}
+
 function toggleMap(status) {
     if (status) {
         $('#map').css('display', 'block')
@@ -239,17 +286,17 @@ function toggleMap(status) {
 
 function getLocation() {
 
-        if (navigator.geolocation) {
-            return new Promise((resolve) => {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    resolve([position.coords.longitude,position.coords.latitude])
-                });
-            })
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    
-    
+    if (navigator.geolocation) {
+        return new Promise((resolve) => {
+            navigator.geolocation.getCurrentPosition((position) => {
+                resolve([position.coords.longitude, position.coords.latitude])
+            });
+        })
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+
+
 }
 
 function appendFilters() {
