@@ -19,7 +19,7 @@ let TableOrder = {
     'yelp_business': ['business_id', 'name', 'stars', 'city', 'state', 'address', 'postal_code', 'review_count', 'is_open', 'neighborhood', 'latitude', 'longitude', 'categories'],
     'yelp_user': ['user_id', 'name', 'yelp_since', 'review_count', 'average_stars', 'compliment_photos', 'useful', 'cool', 'fans', 'funny'],
     'yelp_tip': ['user_id', 'text', 'business_id', 'compliment_count', 'date'],
-    'zomato_restaurant': ['RestaurantId', 'RestaurantName', 'City', ' Cuisines', 'PriceRange', 'AggregateRating', ' RatingColor', 'RatingText'],
+    'zomato_restaurant': ['RestaurantId', 'RestaurantName', 'City', 'Cuisines', 'PriceRange', 'AggregateRating', ' RatingColor', 'RatingText'],
     'zomato_country': ['CountryCode', 'Country'],
     'zomato_rc': ['RestaurantId', 'CountryCode']
 }
@@ -29,6 +29,7 @@ export default class Table {
         this.id = id;
         this.table = table;
         this.data = data;
+        console.log(data)
         this.loadBtn = '#load_more' + id[id.length - 1];
         this.pageSize = pageSize;
         this.onClick = onClickCb;
@@ -72,6 +73,7 @@ export default class Table {
             for (let i = 0; i < headerItems.length; i++) {
                 columns.push({ field: headerItems[i], title: headerItems[i] });
             }
+            console.log(columns)
             // initialize table and render data section
             let height = 0;
             if (this.data.length < 10) {

@@ -188,10 +188,11 @@ function submit() {
             let tableList = ['zomato_restaurant', 'zomato_country', 'zomato_rc']
             for (let i = 0; i < tableList.length; i++) {
                 getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
+                    console.log(data)
                     let dataInArray = Object.keys(data).map((key) => {
                         return data[key]
                     })
-                    console.log(i)
+                    console.log(dataInArray)
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
                 })
             }
