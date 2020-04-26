@@ -3,6 +3,7 @@ import img from '../assets/img/sun.png';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-table/dist/bootstrap-table.css'
 import 'bootstrap-table/dist/bootstrap-table'
+import { MaxHeap } from '@datastructures-js/heap'
 import Table from './table'
 import { GET_DEFAULT, GET_FK, GET_SEARCH_RESULT } from './request'
 import getData from './request'
@@ -10,6 +11,18 @@ import getData from './request'
 import '../assets/css/index.css'
 // import OLMap from './map'
 
+const numList = [
+    50,
+    80,
+    { key: 30, value: 'something' },
+    90,
+    { key: 60, value: null },
+    40,
+    { key: 20, value: { name: 'test' } }
+];
+
+const minHeap = MaxHeap.heapify(numList);
+console.log(minHeap)
 let index_table = {
     'world': 'world_index',
     'us_restaurant': 'yelp_index',
@@ -17,7 +30,7 @@ let index_table = {
     'user_id': 'yelp_uid_index',
     'RestaurantId': 'zomato_rest_fk',
     'CountryCode': 'zomato_country_fk',
-    'world_restaurant': 'zomato_index' 
+    'world_restaurant': 'zomato_index'
 }
 
 // Navigation
@@ -29,7 +42,6 @@ function onCellClicked(field, val, tb) {
 
     if (tb == 'city' || tb == 'country2' || tb == 'countrylanguage') {
         if (field == 'Code' || field == 'CountryCode') {
-            console.log(tb)
             resetAllTables()
             getData(index_table['world'], undefined, undefined, val, GET_SEARCH_RESULT).done((data) => {
                 const { names, rows } = formatObjectData(data);
@@ -52,7 +64,6 @@ function onCellClicked(field, val, tb) {
     } else if (tb == 'zomato_restaurant' || tb == 'zomato_country' || tb == 'zomato_rc') {
         if (field == 'RestaurantId' || field == 'CountryCode') {
             resetAllTables()
-            console.log(val)
             getData(index_table[field], undefined, undefined, val, GET_FK).done((data) => {
                 const { names, rows } = formatObjectData(data);
                 for (let i = 0; i < rows.length; i++) {
@@ -64,16 +75,71 @@ function onCellClicked(field, val, tb) {
 }
 
 // Search
-function submit(){
+function submit() {
     resetAllTables()
-    let keywords = $('#keyword').val();
-    getData(index_table[currDB], undefined, undefined, keywords, GET_SEARCH_RESULT).done((data) => {
-        let { names, rows } = formatObjectData(data);
-        for (let i = 0; i < rows.length; i++) {
-            tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked)
+    let keywords = $('#keyword').val().split(' ');
+    // store all promises in an array
+    let allProm = new Array(keywords.length);
+    for (let i = 0; i < keywords.length; i++) {
+        let word = keywords[i].toLowerCase();
+        allProm[i] = getData(index_table[currDB], undefined, undefined, word, GET_SEARCH_RESULT)
+    }
+
+    Promise.all(allProm).then(data => {
+        // make one
+        let dataInOne = []
+        for (let i = 0; i < data.length; i++) {
+            Array.prototype.push.apply(dataInOne, data[i])
         }
-        // map = new OLMap('map');
+
+        // sort data based on their categories,
+        let categories = {}
+        dataInOne.forEach((item, id) => {
+            // console.log(item,id);
+            let tbName = item[0];
+            categories[tbName] ? categories[tbName].push(item) : categories[tbName] = [item]
+        })
+        console.log(Object.entries(categories))
+
+        // and for each categories sort them based on the occurances
+        // then store them in heap
+        let dataInCate = []
+        for (let category in categories) {
+            console.log(category)
+            let cateDatas = categories[category];
+            let dict = {};
+            for (let i = 0; i < cateDatas.length; i++) {
+                let strK = JSON.stringify(cateDatas[i][2])
+                if (dict[strK] == undefined) {
+                    dict[strK] = 1
+                } else {
+                    dict[strK] += 1
+                }
+            }
+            console.log(dict)
+            // use Heap to sort them
+            let maxHeap = new MaxHeap()
+            for (let [k, v] of Object.entries(dict)) {
+                maxHeap.insert(v, k)
+            }
+
+            let temp = []
+            while (maxHeap.size() != 0) {
+                temp.push(JSON.parse(maxHeap.extractRoot().getValue()))
+            }
+            dataInCate.push(temp)
+        }
+
+        console.log(dataInCate)
+
+        for (let i = 0; i < dataInCate.length; i++) {
+            tables[i] = new Table('#t' + (i + 1), Object.keys(categories)[i], dataInCate[i], 50, true, onCellClicked)
+        }
+       
+
+
     })
+
 }
 
 
@@ -84,19 +150,17 @@ function submit(){
 
     $('#load_more1, #load_more2, #load_more3').click((event) => {
         let tid = parseInt(event.currentTarget.value);
-        console.log(tid, typeof(tid))
-        if(tables[tid] != ""){
+        if (tables[tid] != "") {
             tables[tid].loadMore();
         }
     });
-    
-    $('#keyword').on('keydown', (e)=>{
-        console.log(e.which)
-        if(e.which == 13){
+
+    $('#keyword').on('keydown', (e) => {
+        if (e.which == 13) {
             submit();
         }
     })
-    $('#submit').click(()=>{
+    $('#submit').click(() => {
         submit();
     })
 
@@ -112,20 +176,18 @@ function submit(){
             let tableList = ['country2', 'city', 'countrylanguage']
             for (let i = 0; i < tableList.length; i++) {
                 getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
-                    console.log(data)
                     let dataInArray = Object.keys(data).map((key) => {
                         return data[key]
                     })
-                    // console.log(dataInArray)
+                    console.log(dataInArray)
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
                 })
             }
         } else if (currDB == 'world_restaurant') {
             appendFilters();
             let tableList = ['zomato_restaurant', 'zomato_country', 'zomato_rc']
-            for (let i = 0; i < tableList.length; i++){
+            for (let i = 0; i < tableList.length; i++) {
                 getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
-                    console.log(data)
                     let dataInArray = Object.keys(data).map((key) => {
                         return data[key]
                     })
@@ -169,7 +231,7 @@ function formatObjectData(data) {
 }
 
 function resetAllTables() {
-    
+
     tables.forEach((item) => {
         item.destroy();
     })
