@@ -8,15 +8,15 @@ import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
-import {Fill, Stroke, Circle, Style} from 'ol/style';
+import { Fill, Stroke, Circle, Style } from 'ol/style';
 import TileLayer from 'ol/layer/Tile';
-import {fromLonLat, get as getProjection} from 'ol/proj';
+import { fromLonLat, get as getProjection } from 'ol/proj';
 
 
 
 class OLMap {
     constructor(id) {
-        this.domId = '#'+id;
+        this.domId = '#' + id;
         this.map = new Map({
             target: id,
             layers: [
@@ -31,7 +31,7 @@ class OLMap {
         });
     }
 
-    addMarker(name, long,lat) {
+    addMarker(name, long, lat, zoomLvl) {
         long = parseFloat(long);
         lat = parseFloat(lat);
         let iconFeature = new Feature({
@@ -54,16 +54,8 @@ class OLMap {
             })
         }));
         // this.map.getView().setCenter(ol.proj.transform([lat, long], 'EPSG:4326', 'EPSG:3857'));  
-        // this.map.getView().setZoom(1);
-        
-    }
+        this.map.getView().setZoom(zoomLvl);
 
-    showMap() {
-        $(this.domId).css("display", 'block')
-    }
-
-    clearMap() {
-        $(this.domId).css("display", 'none');
     }
 }
 

@@ -119,9 +119,9 @@ tbody tr td:first-child {
 }
 
 /* map */
-.map{
+#map{
     padding-top: 1em;
-    height: 600px;
+    height: 100vh;
     width: 100%;
 }
 /* pagination */

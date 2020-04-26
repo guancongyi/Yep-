@@ -9,20 +9,8 @@ import { GET_DEFAULT, GET_FK, GET_SEARCH_RESULT } from './request'
 import getData from './request'
 
 import '../assets/css/index.css'
-// import OLMap from './map'
+import OLMap from './map'
 
-const numList = [
-    50,
-    80,
-    { key: 30, value: 'something' },
-    90,
-    { key: 60, value: null },
-    40,
-    { key: 20, value: { name: 'test' } }
-];
-
-const minHeap = MaxHeap.heapify(numList);
-console.log(minHeap)
 let index_table = {
     'world': 'world_index',
     'us_restaurant': 'yelp_index',
@@ -33,13 +21,13 @@ let index_table = {
     'world_restaurant': 'zomato_index'
 }
 
-// Navigation
-// let map = "";
+
 let currDB = "";
 let tables = new Array(3);
-function onCellClicked(field, val, tb) {
-    // $(this.id).bootstrapTable('destroy');
 
+
+// Navigation
+function onCellClicked(field, val, tb) {
     if (tb == 'city' || tb == 'country2' || tb == 'countrylanguage') {
         if (field == 'Code' || field == 'CountryCode') {
             resetAllTables()
@@ -135,9 +123,6 @@ function submit() {
         for (let i = 0; i < dataInCate.length; i++) {
             tables[i] = new Table('#t' + (i + 1), Object.keys(categories)[i], dataInCate[i], 50, true, onCellClicked)
         }
-       
-
-
     })
 
 }
@@ -160,12 +145,14 @@ function submit() {
             submit();
         }
     })
+
     $('#submit').click(() => {
         submit();
     })
 
     // input change event listener
     $('#select_db input').on('change', function () {
+        toggleMap(0)
         resetAllTables()
         currDB = $('input[name=db]:checked', '#select_db').val();
         console.log(currDB)
@@ -179,7 +166,6 @@ function submit() {
                     let dataInArray = Object.keys(data).map((key) => {
                         return data[key]
                     })
-                    console.log(dataInArray)
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
                 })
             }
@@ -188,27 +174,32 @@ function submit() {
             let tableList = ['zomato_restaurant', 'zomato_country', 'zomato_rc']
             for (let i = 0; i < tableList.length; i++) {
                 getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
-                    console.log(data)
                     let dataInArray = Object.keys(data).map((key) => {
                         return data[key]
                     })
-                    console.log(dataInArray)
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
                 })
             }
         } else {
-            appendFilters();
-            let tableList = ['yelp_business', 'yelp_user']
-            for (let i = 0; i < tableList.length; i++) {
-                getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
-                    console.log(data)
-                    let dataInArray = Object.keys(data).map((key) => {
-                        return data[key]
+            toggleMap(1);
+            // get user's location
+            getLocation().then((loc) => {
+                appendFilters();
+                console.log(loc)
+                let map = new OLMap('map');
+                map.addMarker("", loc[0],loc[1],12)
+
+                let tableList = ['yelp_business', 'yelp_user']
+                for (let i = 0; i < tableList.length; i++) {
+                    getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
+                        let dataInArray = Object.keys(data).map((key) => {
+                            return data[key]
+                        })
+                        tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
                     })
-                    console.log(i)
-                    tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
-                })
-            }
+                }
+            })
+            
         }
 
     });
@@ -232,10 +223,33 @@ function formatObjectData(data) {
 }
 
 function resetAllTables() {
-
     tables.forEach((item) => {
         item.destroy();
     })
+}
+
+function toggleMap(status) {
+    if (status) {
+        $('#map').css('display', 'block')
+    } else {
+        $('#map').css('display', 'none')
+    }
+}
+
+
+function getLocation() {
+
+        if (navigator.geolocation) {
+            return new Promise((resolve) => {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    resolve([position.coords.longitude,position.coords.latitude])
+                });
+            })
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    
+    
 }
 
 function appendFilters() {
