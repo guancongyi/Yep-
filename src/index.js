@@ -83,13 +83,29 @@ function onCellClicked(field, val, tb) {
                 } else {
                     let total = 0;
                     resetAllTables()
+                    let points = []
                     const { names, rows } = formatObjectData(data);
                     for (let i = 0; i < rows.length; i++) {
+                        if (names[i] == 'zomato_restaurant') {
+                            points.push([rows[i][0]['Longitude'], rows[i][0]['Latitude']])
+                        }
                         tables[i] = new Table('#t' + (i + 1), names[i], rows[i], 50, true, onCellClicked);
                     }
                     total += data.length;
                     $('#search_info').text(total + ' Records found.');
+
+                    // when searching restaurant id
+                    if (field == 'RestaurantId') {
+                        clearMap()
+                        toggleMap(1)
+                        let map = new OLMap('map');
+                        map.addMarkers('', points, 15)
+                    } else {
+                        toggleMap(0)
+                    }
                 }
+
+
 
             })
         }
@@ -133,7 +149,6 @@ function submit() {
             // then store them in heap
             let sortedData = []
             for (let category in categories) {
-                console.log(category)
                 let cateDatas = categories[category];
                 let dict = {};
                 for (let i = 0; i < cateDatas.length; i++) {
@@ -162,11 +177,14 @@ function submit() {
                 tables[i] = new Table('#t' + (i + 1), Object.keys(categories)[i], sortedData[i], 50, true, onCellClicked)
 
                 // map
-                if (Object.keys(categories)[i] == 'yelp_business') {
+                if (Object.keys(categories)[i] == 'yelp_business' || Object.keys(categories)[i] == 'zomato_restaurant') {
                     let points = []
                     sortedData[i].forEach((item) => {
-                        points.push([item.longitude, item.latitude])
+                        if (Object.keys(categories)[i] == 'zomato_restaurant') points.push([item['Longitude'], item['Latitude']]);
+                        // console.log(item.longitude, item.latitude)
+                        if (Object.keys(categories)[i] == 'yelp_business') points.push([item.longitude, item.latitude]);
                     })
+
                     clearMap()
                     let map = new OLMap('map');
                     map.addMarkers('', points, 15)
@@ -204,7 +222,7 @@ function submit() {
         $('#search_info').text('');
         let total = 0;
         toggleMap(0)
-        // clearMap()
+        clearMap()
         resetAllTables()
         currDB = $('input[name=db]:checked', '#select_db').val();
         console.log(currDB)
@@ -219,11 +237,12 @@ function submit() {
                         return data[key]
                     })
                     tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
-
                 })
             }
         } else if (currDB == 'world_restaurant') {
+            toggleMap(1);
             appendFilters();
+            let map = new OLMap('map');
             let tableList = ['zomato_restaurant', 'zomato_country', 'zomato_rc']
             for (let i = 0; i < tableList.length; i++) {
                 getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
@@ -236,27 +255,23 @@ function submit() {
             }
         } else {
             // get user's location
-            getLocation().then((loc) => {
-                toggleMap(1);
-                appendFilters();
-                console.log(loc)
-                let map = new OLMap('map');
-                map.addMarkers("", [[loc[0], loc[1]]], 10)
-                let tableList = ['yelp_business', 'yelp_user']
-                for (let i = 0; i < tableList.length; i++) {
-                    getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
-
-                        let dataInArray = Object.keys(data).map((key) => {
-                            return data[key]
-                        })
-                        tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
-
+            // getLocation().then((loc) => {
+            toggleMap(1);
+            appendFilters();
+            let map = new OLMap('map');
+            // map.addMarkers("", [[loc[0], loc[1]]], 10)
+            let tableList = ['yelp_business', 'yelp_user']
+            for (let i = 0; i < tableList.length; i++) {
+                getData(tableList[i], undefined, undefined, undefined, GET_DEFAULT).done((data) => {
+                    let dataInArray = Object.keys(data).map((key) => {
+                        return data[key]
                     })
+                    tables[i] = new Table('#t' + (i + 1), tableList[i], dataInArray, 50, false, onCellClicked);
 
-                }
+                })
 
-
-            })
+            }
+            // })
 
         }
 
@@ -264,14 +279,13 @@ function submit() {
 })();
 
 function formatObjectData(data) {
-    console.log(data)
+
     let obj = {}
     data.forEach((item, id) => {
         // console.log(item,id);
         let tbName = item[0];
         obj[tbName] ? obj[tbName].push(item[2]) : obj[tbName] = [item[2]]
     })
-    console.log(obj)
     let allData = Object.values(obj)
     let tblNames = Object.keys(obj)
     return {
