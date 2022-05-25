@@ -35,7 +35,7 @@
     "@datastructures-js/heap": "^2.0.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "bootstrap": "^4.4.1",
-    "bootstrap-table": "^1.16.0",
+    "bootstrap-table": "^1.20.2",
     "ol": "^6.3.1"
   }
 }
